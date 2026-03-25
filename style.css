@@ -123,6 +123,13 @@ header input::placeholder {
   display: none;
 }
 
+.search-highlight {
+  background: #fff176;
+  color: #333;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
 /* feature/add-timestamp 新增 */
 .timestamp {
   display: block;
