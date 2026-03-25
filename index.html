@@ -59,6 +59,54 @@
     document.getElementById('user-input').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') sendMessage();
     });
+
+    function searchMessages(keyword) {
+      const messages = document.querySelectorAll('#chat-box .message');
+      const trimmed = keyword.trim().toLowerCase();
+
+      // 先移除所有高亮，還原 text nodes
+      messages.forEach(msg => removeHighlight(msg));
+
+      messages.forEach(msg => {
+        // 取得純文字內容（排除 timestamp）
+        const textNodes = Array.from(msg.childNodes)
+          .filter(n => n.nodeType === Node.TEXT_NODE)
+          .map(n => n.textContent)
+          .join('');
+        const content = textNodes.toLowerCase();
+
+        if (!trimmed) {
+          msg.classList.remove('hidden');
+        } else if (content.includes(trimmed)) {
+          msg.classList.remove('hidden');
+          highlightText(msg, trimmed);
+        } else {
+          msg.classList.add('hidden');
+        }
+      });
+    }
+
+    function highlightText(element, keyword) {
+      Array.from(element.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent;
+          const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp(`(${escaped})`, 'gi');
+          if (regex.test(text)) {
+            const wrapper = document.createElement('span');
+            wrapper.setAttribute('data-highlight-wrapper', 'true');
+            wrapper.innerHTML = text.replace(regex, '<mark class="search-highlight">$1</mark>');
+            node.replaceWith(wrapper);
+          }
+        }
+      });
+    }
+
+    function removeHighlight(element) {
+      element.querySelectorAll('[data-highlight-wrapper]').forEach(wrapper => {
+        wrapper.replaceWith(document.createTextNode(wrapper.textContent));
+      });
+    }
   </script>
 
 </body>
