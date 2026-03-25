@@ -32,3 +32,42 @@ function send(input) {
   addUserMessage(input);
   addBotMessage('收到：' + input);
 }
+
+// ============================
+// 以下為修正後的版本
+// ============================
+
+// 修正一：變數命名清楚，函式與變數名稱具描述性
+function appendMessageToChatBox(messageText) {
+  const chatBox = document.getElementById('chat-box');
+  const messageDiv = document.createElement('div');
+  messageDiv.textContent = messageText;
+  chatBox.appendChild(messageDiv);
+}
+
+// 修正二：提取共用邏輯，消除重複程式碼
+function addMessage(text, role) {
+  const chatBox = document.getElementById('chat-box');
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${role}`;
+  messageDiv.textContent = text;
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function addUserMessageFixed(text) {
+  addMessage(text, 'user');
+}
+
+function addBotMessageFixed(text) {
+  addMessage(text, 'bot');
+}
+
+// 修正三：加入空白輸入驗證
+function sendFixed(input) {
+  if (!input || !input.trim()) {
+    return;
+  }
+  addUserMessageFixed(input);
+  addBotMessageFixed('收到：' + input);
+}
